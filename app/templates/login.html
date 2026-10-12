@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block content %}
+<h1>Iniciar sesion</h1>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+<form method="post" class="card">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label for="usuario">Usuario</label><input id="usuario" name="usuario" required>
+  <label for="clave">Clave</label><input id="clave" name="clave" type="password" required>
+  <p><button type="submit">Entrar</button></p>
+</form>{% endblock %}

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReparaCampus</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body>
+<header><strong>ReparaCampus</strong>
+{% if user %}
+  <a href="{{ url_for('web.incidents') }}">Incidencias</a>
+  {% if user['role'] == 'SOLICITANTE' %}<a href="{{ url_for('web.new_incident') }}">Nueva</a>{% endif %}
+  {% if user['role'] == 'COORDINADOR' %}<a href="{{ url_for('web.dashboard') }}">Tablero</a>{% endif %}
+  <form method="post" action="{{ url_for('web.logout') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <span>{{ user['username'] }} ({{ user['role'] }})</span>
+    <button type="submit">Salir</button></form>
+{% endif %}
+</header>
+<main>{% block content %}{% endblock %}</main>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body></html>

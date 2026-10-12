@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block content %}
+<h1>Tablero del coordinador</h1>
+<div class="card"><p>Total: <strong>{{ d.total }}</strong> &middot; Cerradas: <strong>{{ d.closed }}</strong>
+&middot; Porcentaje de cierre: <strong id="pct">{{ d.closure_pct }}</strong></p></div>
+<div class="card"><h2>Por estado</h2><table>{% for k, v in d.by_status.items() %}
+<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table></div>
+<div class="card"><h2>Por prioridad</h2><table>{% for k, v in d.by_priority.items() %}
+<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table></div>
+<div class="card"><h2>CRITICA no cerradas</h2><table>
+{% for r in d.critical_open %}<tr><td><a href="{{ url_for('web.detail', incident_id=r['id']) }}">{{ r['code'] }}</a></td>
+<td>{{ r['status'] }}</td><td>{{ r['location'] }}</td></tr>
+{% else %}<tr><td>Ninguna.</td></tr>{% endfor %}</table></div>
+{% endblock %}

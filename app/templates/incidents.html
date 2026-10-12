@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% block content %}
+<h1>Incidencias</h1>
+<form method="get" class="card">
+  <label for="estado">Estado</label>
+  <select id="estado" name="estado"><option value="">Todos</option>
+  {% for s in services.STATUSES %}<option value="{{ s }}" {{ 'selected' if s == status }}>{{ s }}</option>{% endfor %}</select>
+  <label for="prioridad">Prioridad</label>
+  <select id="prioridad" name="prioridad"><option value="">Todas</option>
+  {% for p in services.PRIORITIES %}<option value="{{ p }}" {{ 'selected' if p == priority }}>{{ p }}</option>{% endfor %}</select>
+  <p><button type="submit">Filtrar</button></p>
+</form>
+<table><tr><th>Codigo</th><th>Ubicacion</th><th>Categoria</th><th>Prioridad</th><th>Estado</th><th>Autor</th></tr>
+{% for r in rows %}
+<tr><td><a href="{{ url_for('web.detail', incident_id=r['id']) }}">{{ r['code'] }}</a></td>
+<td>{{ r['location'] }}</td><td>{{ r['category'] }}</td>
+<td><span class="badge {{ r['priority'] }}">{{ r['priority'] }}</span></td>
+<td>{{ r['status'] }}</td><td>{{ r['author_name'] }}</td></tr>
+{% else %}<tr><td colspan="6">Sin incidencias.</td></tr>{% endfor %}
+</table>{% endblock %}

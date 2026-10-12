@@ -1,0 +1,14 @@
+body{font-family:system-ui,sans-serif;margin:0;color:#1c1f26;background:#f5f6f8}
+header{background:#12355b;color:#fff;padding:.7rem 1.2rem;display:flex;gap:1rem;align-items:center}
+header a{color:#fff;text-decoration:none}header form{margin-left:auto;display:inline}
+main{max-width:60rem;margin:1.2rem auto;padding:0 1rem}
+table{border-collapse:collapse;width:100%;background:#fff}
+th,td{border:1px solid #d5d9e0;padding:.4rem .6rem;text-align:left;vertical-align:top}
+th{background:#e8ecf2}
+.card{background:#fff;border:1px solid #d5d9e0;border-radius:6px;padding:1rem;margin:1rem 0}
+.error{background:#fde8e8;border:1px solid #e0a3a3;padding:.6rem;border-radius:4px}
+label{display:block;margin:.6rem 0 .2rem;font-weight:600}
+input,select,textarea{width:100%;max-width:34rem;padding:.4rem;box-sizing:border-box}
+button{padding:.45rem .9rem;cursor:pointer}
+.badge{padding:.1rem .45rem;border-radius:3px;background:#dde5f0;font-size:.85rem}
+.CRITICA{background:#f6c5c5}.ALTA{background:#f8e0b0}

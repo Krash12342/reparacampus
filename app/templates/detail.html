@@ -1,0 +1,60 @@
+{% extends "base.html" %}{% block content %}
+<h1>{{ inc['code'] }} <span class="badge {{ inc['priority'] }}">{{ inc['priority'] }}</span></h1>
+<div class="card">
+<p><strong>Estado:</strong> {{ inc['status'] }} &middot; <strong>Ubicacion:</strong> {{ inc['location'] }}
+&middot; <strong>Categoria:</strong> {{ inc['category'] }} &middot; <strong>Impacto:</strong> {{ inc['impact'] }}
+&middot; <strong>Riesgo:</strong> {{ 'true' if inc['risk'] else 'false' }}</p>
+<p><strong>Tecnico:</strong> {{ technician or '-' }} &middot; <strong>Creada:</strong> {{ inc['created_at'] }}</p>
+<p><strong>Descripcion:</strong></p><pre>{{ inc['description'] }}</pre>
+</div>
+
+{% set role = user['role'] %}{% set st = inc['status'] %}
+{% if role == 'COORDINADOR' and st == 'REGISTRADA' %}
+<form method="post" action="{{ url_for('web.assign', incident_id=inc['id']) }}" class="card">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label for="tecnico_id">Asignar tecnico</label>
+  <select id="tecnico_id" name="tecnico_id">{% for t in techs %}<option value="{{ t['id'] }}">{{ t['username'] }}</option>{% endfor %}</select>
+  <p><button type="submit">Asignar</button></p></form>
+{% endif %}
+{% if role == 'TECNICO' and st == 'ASIGNADA' %}
+<form method="post" action="{{ url_for('web.start', incident_id=inc['id']) }}" class="card">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit">Iniciar atencion</button></form>
+{% endif %}
+{% if role == 'TECNICO' and st == 'EN_ATENCION' %}
+<form method="post" action="{{ url_for('web.solve', incident_id=inc['id']) }}" class="card">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label for="solucion">Solucion (20 a 800 caracteres)</label>
+  <textarea id="solucion" name="solucion" rows="4" maxlength="820" required></textarea>
+  <small id="solucion-count"></small>
+  <p><button type="submit">Registrar solucion</button></p></form>
+{% endif %}
+{% if role == 'SOLICITANTE' and st == 'PENDIENTE_VALIDACION' %}
+<form method="post" action="{{ url_for('web.confirm', incident_id=inc['id']) }}" class="card"
+      data-confirm="Confirmar y cerrar la incidencia?">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit">Confirmar solucion</button></form>
+<form method="post" action="{{ url_for('web.reject', incident_id=inc['id']) }}" class="card">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label for="motivo-r">Motivo del rechazo (10 a 300 caracteres)</label>
+  <textarea id="motivo-r" name="motivo" rows="3" maxlength="320" required></textarea>
+  <p><button type="submit">Rechazar solucion</button></p></form>
+{% endif %}
+{% if role == 'SOLICITANTE' and st == 'CERRADA' %}
+<form method="post" action="{{ url_for('web.reopen', incident_id=inc['id']) }}" class="card">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label for="motivo-o">Motivo de reapertura (10 a 300 caracteres; hasta 48 h tras el ultimo cierre)</label>
+  <textarea id="motivo-o" name="motivo" rows="3" maxlength="320" required></textarea>
+  <p><button type="submit">Reabrir</button></p></form>
+{% endif %}
+
+<h2>Soluciones</h2>
+<table><tr><th>Fecha</th><th>Texto</th></tr>
+{% for s in solutions %}<tr><td>{{ s['created_at'] }}</td><td>{{ s['text'] }}</td></tr>
+{% else %}<tr><td colspan="2">Sin soluciones.</td></tr>{% endfor %}</table>
+<h2>Cierres</h2>
+<table><tr><th>Fecha</th></tr>{% for c in closures %}<tr><td>{{ c['closed_at'] }}</td></tr>
+{% else %}<tr><td>Sin cierres.</td></tr>{% endfor %}</table>
+<h2>Historial</h2>
+<table><tr><th>Fecha</th><th>Autor</th><th>Accion</th><th>Estados</th><th>Detalle</th></tr>
+{% for e in events %}<tr><td>{{ e['at'] }}</td><td>{{ e['actor'] }}</td><td>{{ e['action'] }}</td>
+<td>{{ e['from_status'] or '-' }} &rarr; {{ e['to_status'] }}</td><td>{{ e['detail'] or '' }}</td></tr>{% endfor %}</table>
+{% endblock %}
