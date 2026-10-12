@@ -1,0 +1,24 @@
+@startuml
+title Rechazo de solucion (S04 / AC-S04-03)
+actor Solicitante
+participant "Navegador" as B
+participant "routes.py\n(sesion + CSRF)" as R
+participant "services.reject" as S
+database SQLite as DB
+Solicitante -> B : escribe motivo y envia
+B -> R : POST /incidencias/{id}/rechazar (cookie de sesion + csrf_token)
+R -> R : valida CSRF; carga usuario desde la sesion
+R -> S : reject(db, usuario, id, motivo, ahora_servidor)
+S -> DB : BEGIN IMMEDIATE
+S -> S : rol == SOLICITANTE ? (si no: 403)
+S -> DB : SELECT incidencia
+S -> S : autor == usuario ? (si no: 403)
+S -> S : estado == PENDIENTE_VALIDACION ? (si no: 409)
+S -> S : motivo.strip() de 10 a 300 ? (si no: 400)
+S -> DB : UPDATE incidents SET status = EN_ATENCION
+S -> DB : INSERT events (RECHAZAR, autor, fecha, estados, motivo)
+S -> DB : COMMIT
+S --> R : ok
+R --> B : 302 a /incidencias/{id}
+note over S,DB : cualquier error -> ROLLBACK: estado e historial intactos
+@enduml

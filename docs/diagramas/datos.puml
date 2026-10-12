@@ -1,0 +1,14 @@
+@startuml
+title Modelo de datos
+entity users { *id; username; role; password_hash; active }
+entity incidents { *id; code; location; category; description; impact; risk; priority; status; author_id; technician_id; created_at; last_closed_at }
+entity solutions { *id; incident_id; technician_id; text; created_at }
+entity closures { *id; incident_id; closed_by; closed_at }
+entity events { *id; incident_id; actor_id; at; action; from_status; to_status; detail }
+users ||--o{ incidents : "autor"
+users |o--o{ incidents : "tecnico"
+incidents ||--o{ solutions
+incidents ||--o{ closures
+incidents ||--o{ events
+users ||--o{ events : actor
+@enduml

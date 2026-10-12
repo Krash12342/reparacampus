@@ -1,0 +1,16 @@
+@startuml
+title Componentes (monolito modular)
+package "Navegador" { [HTML + CSS + JavaScript] as UI }
+package "Servidor Flask" {
+  [routes.py: sesion, CSRF, vistas] as R
+  [services.py: reglas, permisos, estados] as S
+  [db.py: transacciones, seed] as D
+  [plantillas Jinja (autoescape)] as T
+}
+database "SQLite: users, incidents, solutions, closures, events" as DB
+UI --> R : HTTP + cookie de sesion
+R --> S
+R --> T
+S --> D
+D --> DB
+@enduml

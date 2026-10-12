@@ -1,0 +1,10 @@
+@startuml
+title Estados de una incidencia
+[*] --> REGISTRADA : solicitante registra (RF01)
+REGISTRADA --> ASIGNADA : coordinador asigna a tecnico activo (RF02)
+ASIGNADA --> EN_ATENCION : tecnico asignado inicia (RF03)
+EN_ATENCION --> PENDIENTE_VALIDACION : tecnico registra solucion 20-800 (RF03)
+PENDIENTE_VALIDACION --> CERRADA : solicitante duenio confirma (RF04)
+PENDIENTE_VALIDACION --> EN_ATENCION : solicitante rechaza, motivo 10-300 (RF04)
+CERRADA --> EN_ATENCION : duenio reabre <= 48 h desde ultimo cierre, motivo 10-300 (RF04)
+@enduml
