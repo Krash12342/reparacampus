@@ -1,0 +1,8 @@
+instance/
+__pycache__/
+.pytest_cache/
+*.db
+.venv/
+subir_a_github.sh
+subir_a_github.bat
+LEEME_SUBIR.txt
